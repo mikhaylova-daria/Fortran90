@@ -3,7 +3,10 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 using namespace std;
+extern std::vector<bool> flag_exit;
+extern std::vector<bool> flag_do;
 
 class Expr {
     public:
@@ -74,6 +77,25 @@ class StmtIf : public Stmt {
     private:
     LogExpr *e;
     ListStmt *L1, *L2;
+};
+
+
+class StmtDo : public Stmt {
+    std::string name_var;
+    Expr *e1, *e2;
+    ListStmt* L;
+public:
+    StmtDo(ListStmt* _L): L(_L) { }
+    StmtDo(std::string _name_var, Expr* _e1, Expr* _e2, ListStmt* _L):e1(_e1), e2(_e2), name_var(_name_var), L(_L) {
+    }
+    void run();
+    private:
+    LogExpr *e;
+    ListStmt *L1, *L2;
+};
+
+class StmtExit: public Stmt {
+    void run();
 };
 
 class StmtAssign : public Stmt {
@@ -154,3 +176,4 @@ int yylex();
 void yyerror(string s);
 
 #endif /* _FORTRAN_H */
+

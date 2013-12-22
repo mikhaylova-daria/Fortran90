@@ -5,15 +5,15 @@
 %}
 
 %union {
-	Expr *expr;
-	LogExpr *log_expr;
-	Stmt *stmt;
-	ListStmt *list_stmt;
-	Decl* decl;
-	DeclList* list_decl; 
-	int int_val;
-	char ident_name[256];
-	Procedure* proc;
+        Expr *expr;
+        LogExpr *log_expr;
+        Stmt *stmt;
+        ListStmt *list_stmt;
+        Decl* decl;
+        DeclList* list_decl; 
+        int int_val;
+        char ident_name[256];
+        Procedure* proc;
 }; /* тип yylval */
 
 /* Precedence */
@@ -24,7 +24,7 @@
 
 %token <int_val> NUMERAL
 %token <ident_name> IDENT
-%token PRINT IF THEN ELSE ENDIF EQ COMMA PROGRAM INTEGER END DUB_COL
+%token PRINT IF THEN ELSE ENDIF EQ COMMA PROGRAM INTEGER END DUB_COL DO EXIT
 
 %type <expr> expr
 %type <log_expr> log_expr
@@ -64,27 +64,29 @@ separator
         ;
 
 stmt
-	: PRINT expr { $$ = new StmtPrint($2); } 
-	| IDENT '=' expr { $$ = new StmtAssign($1, $3); }
-	| IF '(' log_expr ')' THEN separator list_stmt ELSE separator list_stmt END IF { " IfThenElse \n"; $$ = new StmtIf($3, $7, $10); }
-	| IF '(' log_expr ')' THEN separator list_stmt END IF {" ifThen \n"; $$ = new StmtIf($3, $7, NULL); }
-	;
+        : PRINT expr { $$ = new StmtPrint($2); } 
+        | IDENT '=' expr { $$ = new StmtAssign($1, $3); }
+        | IF '(' log_expr ')' THEN separator list_stmt ELSE separator list_stmt END IF { " IfThenElse \n"; $$ = new StmtIf($3, $7, $10); }
+        | IF '(' log_expr ')' THEN separator list_stmt END IF {" ifThen \n"; $$ = new StmtIf($3, $7, NULL); }
+	| DO separator list_stmt END DO {$$ = new StmtDo($3);}
+	| DO IDENT '=' expr COMMA expr separator list_stmt END DO {$$ = new StmtDo($2, $4, $6, $8);}
+        ;
 
 log_expr
-	: expr '<' expr { $$ = new LogExpr('<', $1, $3); }
-	| expr '>' expr { $$ = new LogExpr('>', $1, $3); }
-	| expr EQ expr	{ $$ = new LogExpr('=', $1, $3); }
-	;
+        : expr '<' expr { $$ = new LogExpr('<', $1, $3); }
+        | expr '>' expr { $$ = new LogExpr('>', $1, $3); }
+        | expr EQ expr        { $$ = new LogExpr('=', $1, $3); }
+        ;
 expr
-	: IDENT  { $$ = new ExprVariable($1); }
-	| NUMERAL 		{ $$ = new ExprNumeral($1); }
-	| '-' expr %prec UMINUS	{ $$ = new ExprArith(UMINUS, $2, NULL); }
-	| expr '+' expr		{ $$ = new ExprArith('+', $1, $3); }
-	| expr '-' expr		{ $$ = new ExprArith('-', $1, $3); }
-	| expr '*' expr		{ $$ = new ExprArith('*', $1, $3); }
-	| expr '/' expr		{ $$ = new ExprArith('/', $1, $3); }	
-	| expr POW expr		{ $$ = new ExprArith(POW, $1, $3); }
-	| '(' expr ')'		{ $$ = $2; }
-	;
+        : IDENT  { $$ = new ExprVariable($1); }
+        | NUMERAL                 { $$ = new ExprNumeral($1); }
+        | '-' expr %prec UMINUS        { $$ = new ExprArith(UMINUS, $2, NULL); }
+        | expr '+' expr                { $$ = new ExprArith('+', $1, $3); }
+        | expr '-' expr                { $$ = new ExprArith('-', $1, $3); }
+        | expr '*' expr                { $$ = new ExprArith('*', $1, $3); }
+        | expr '/' expr                { $$ = new ExprArith('/', $1, $3); }        
+        | expr POW expr                { $$ = new ExprArith(POW, $1, $3); }
+        | '(' expr ')'                { $$ = $2; }
+        ;
 
 %%

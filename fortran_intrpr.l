@@ -19,6 +19,8 @@ NUMERAL ([1-9][0-9]*)|0
 "END"		{ return END;}
 "PROGRAM"	{ return PROGRAM; }
 "INTEGER"	{ return INTEGER; }
+"DO"		{ return DO; }
+"EXIT"		{ return EXIT; }
 "::"		{ return DUB_COL;}
 {NUMERAL}	{ yylval.int_val = atoi(yytext); return NUMERAL; }
 {IDENT}		{ strcpy(yylval.ident_name, yytext); return IDENT; }
