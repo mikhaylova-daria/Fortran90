@@ -41,8 +41,15 @@ main
         | PROGRAM IDENT separator list_decl separator list_stmt END PROGRAM IDENT separator { printf("main") ; Program = new Procedure($2, $4, $6)}
         ;
 
+list_stmt
+        : list_stmt stmt separator {printf("list_stmt\n"); $1->add($2); $$=$1; }
+        | /* epsilon */ {printf("list_stmt_empty\n");  $$ = new ListStmt() ; }
+        ;
+
+
 list_decl
         : list_decl decl {printf("list_decl\n"); $1->add($2); $$=$1; }
+        | list_decl separator decl {printf("list_decl\n"); $1->add($3); $$=$1; }
         | /* epsilon */ {printf("list_decl\n") ; $$ = new DeclList();  }
         ;
 
@@ -50,11 +57,6 @@ list_decl
 decl        
         : INTEGER DUB_COL IDENT {printf("decl\n") ;$$ = new Decl(0, $3);}
         | decl COMMA IDENT {printf("decl\n");$1->add($3); $$ = $1;} 
-        ;
-
-list_stmt
-        : list_stmt stmt separator {printf("list_stmt\n"); $1->add($2); $$=$1; }
-        | /* epsilon */ {printf("list_stmt_empty\n");  $$ = new ListStmt() ; }
         ;
 
 separator
