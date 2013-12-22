@@ -95,6 +95,7 @@ public:
 };
 
 class StmtExit: public Stmt {
+public:
     void run();
 };
 

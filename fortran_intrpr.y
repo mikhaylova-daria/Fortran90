@@ -70,6 +70,7 @@ stmt
         | IF '(' log_expr ')' THEN separator list_stmt END IF {" ifThen \n"; $$ = new StmtIf($3, $7, NULL); }
 	| DO separator list_stmt END DO {$$ = new StmtDo($3);}
 	| DO IDENT '=' expr COMMA expr separator list_stmt END DO {$$ = new StmtDo($2, $4, $6, $8);}
+	| EXIT {$$ = new StmtExit();}
         ;
 
 log_expr
