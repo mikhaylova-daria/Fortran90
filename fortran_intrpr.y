@@ -37,35 +37,35 @@
 
 
 main
-	: PROGRAM IDENT separator list_stmt END PROGRAM IDENT separator { Program = new Procedure($2, NULL, $4)}
-	| PROGRAM IDENT separator list_decl separator list_stmt END PROGRAM IDENT separator { printf("main") ; Program = new Procedure($2, $4, $6)}
-	;
+        : PROGRAM IDENT separator list_stmt END PROGRAM IDENT separator { Program = new Procedure($2, NULL, $4)}
+        | PROGRAM IDENT separator list_decl separator list_stmt END PROGRAM IDENT separator { printf("main") ; Program = new Procedure($2, $4, $6)}
+        ;
 
 list_decl
-	: list_decl decl {printf("list_decl\n"); $1->add($2); $$=$1; }
-	| /* epsilon */ {printf("list_decl\n") ; $$ = new DeclList();  }
-	;
+        : list_decl decl {printf("list_decl\n"); $1->add($2); $$=$1; }
+        | /* epsilon */ {printf("list_decl\n") ; $$ = new DeclList();  }
+        ;
 
 
-decl	
-	: INTEGER DUB_COL IDENT {printf("decl\n") ;$$ = new Decl(0, $3);}
-	| decl COMMA IDENT {printf("decl\n");$1->add($3); $$ = $1;} 
-	;
+decl        
+        : INTEGER DUB_COL IDENT {printf("decl\n") ;$$ = new Decl(0, $3);}
+        | decl COMMA IDENT {printf("decl\n");$1->add($3); $$ = $1;} 
+        ;
 
 list_stmt
-	: list_stmt stmt separator {printf("list_stmt\n"); $1->add($2); $$=$1; }
-	| /* epsilon */ {printf("list_stmt\n");  $$ = new ListStmt() ; }
-	;
+        : list_stmt stmt separator {printf("list_stmt\n"); $1->add($2); $$=$1; }
+        | /* epsilon */ {printf("list_stmt_empty\n");  $$ = new ListStmt() ; }
+        ;
 
 separator
-	: '\n'
-	;
+        : '\n'
+        ;
 
 stmt
 	: PRINT expr { $$ = new StmtPrint($2); } 
 	| IDENT '=' expr { $$ = new StmtAssign($1, $3); }
-	| IF log_expr THEN separator list_stmt ELSE separator list_stmt ENDIF { $$ = new StmtIf($2, $5, $8); }
-	| IF log_expr THEN separator list_stmt ENDIF { $$ = new StmtIf($2, $5, NULL); }
+	| IF '(' log_expr ')' THEN separator list_stmt ELSE separator list_stmt END IF { " IfThenElse \n"; $$ = new StmtIf($3, $7, $10); }
+	| IF '(' log_expr ')' THEN separator list_stmt END IF {" ifThen \n"; $$ = new StmtIf($3, $7, NULL); }
 	;
 
 log_expr

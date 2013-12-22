@@ -16,7 +16,6 @@ NUMERAL ([1-9][0-9]*)|0
 "IF"		{ return IF; }
 "THEN"		{ return THEN; }
 "ELSE"		{ return ELSE; }
-"ENDIF"		{ return ENDIF; }
 "END"		{ return END;}
 "PROGRAM"	{ return PROGRAM; }
 "INTEGER"	{ return INTEGER; }
