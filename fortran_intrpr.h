@@ -38,6 +38,25 @@ class ExprVariable : public Expr {
        string name;
 };
 
+
+class CallArgs {
+public:
+	std::vector<Expr*> args;
+	CallArgs(){;}
+	void add(Expr *e) {
+		args.push_back(e);
+	}
+};
+
+class FuncExpr: public Expr {
+    public:
+    FuncExpr(std::string _name, CallArgs* args): name(_name) { }
+    int eval();
+    private:
+	std::string name;
+	CallArgs* args;
+};
+
 class LogExpr { /* A <> B */
     public:
     LogExpr(int op_, Expr *e1_, Expr *e2_) : op(op_), e1(e1_), e2(e2_) { }
@@ -46,6 +65,7 @@ class LogExpr { /* A <> B */
     int op; /* '<', '>', '=' */
     Expr *e1, *e2;
 };
+
 
 
 class Stmt {
@@ -153,22 +173,51 @@ public :
 };
 
 class Procedure {
+public:
     DeclList* decl;
     ListStmt* stmt;
     std::string name;
-public:
     Procedure(std::string _name, DeclList* _decl, ListStmt* _stmt): name(_name), decl(_decl), stmt(_stmt) {
     }
     void run();
 };
 
+class ListArg{
+	std::vector<variable> args;
+	public:
+	void add(std::string name) {
+		variable var;
+		var.isInicial = false;
+		var.name = name;
+		args.push_back(var);
+    	}
+	void run();
+};
+
+class Function {
+public:
+	ListArg* args;
+	std::string name;
+	DeclList* decl;
+	ListStmt* stmt;
+	Function(std::string _name, DeclList* _decl, ListStmt* _stmt, ListArg* _args): name(_name), decl(_decl), stmt(_stmt), args(_args) {}
+	void run();
+};
+
+class ProgramText {
+	public :
+	ProgramText(){;}
+};
 extern Procedure *Program;
 
 #include "fortran_intrpr.tab.h"
 
 
 extern std::vector< std::vector<variable> > Table;
-
+extern std::vector<Function*> TableFunc;
+extern std::vector<std::vector<int> > args_value;
+extern std::vector<int> return_value;
+Function *get_func(string name);
 variable *get_id(string name);
 
 int pow_int(int x, int n);

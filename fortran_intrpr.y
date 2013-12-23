@@ -13,7 +13,11 @@
         DeclList* list_decl; 
         int int_val;
         char ident_name[256];
-        Procedure* proc;
+        Function* func;
+	ListArg* args;
+	FuncExpr *func_expr;
+	CallArgs *call_args;
+	ProgramText* program_text;
 }; /* тип yylval */
 
 /* Precedence */
@@ -24,7 +28,7 @@
 
 %token <int_val> NUMERAL
 %token <ident_name> IDENT
-%token PRINT IF THEN ELSE ENDIF EQ COMMA PROGRAM INTEGER END DUB_COL DO EXIT
+%token PRINT IF THEN ELSE ENDIF EQ COMMA PROGRAM INTEGER END DUB_COL DO EXIT FUNCTION CALL
 
 %type <expr> expr
 %type <log_expr> log_expr
@@ -32,13 +36,33 @@
 %type <stmt> stmt
 %type <list_decl> list_decl
 %type <decl> decl
+%type <func> func
+%type <args> args
+%type <program_text> program_text
+%type <call_args> call_args
 
 %%
 
 
-main
-        : PROGRAM IDENT separator list_stmt END PROGRAM IDENT separator { Program = new Procedure($2, NULL, $4)}
-        | PROGRAM IDENT separator list_decl separator list_stmt END PROGRAM IDENT separator { printf("main") ; Program = new Procedure($2, $4, $6)}
+program
+        : PROGRAM IDENT separator list_stmt END PROGRAM IDENT program_text separator { Program = new Procedure($2, NULL, $4);}
+        | PROGRAM IDENT separator list_decl separator list_stmt END PROGRAM IDENT separator func separator { printf("main2") ; Program = new Procedure($2, $4, $6);}
+        | PROGRAM IDENT separator list_decl separator list_stmt END PROGRAM IDENT separator{ printf("main1") ; Program = new Procedure($2, $4, $6);}
+	;
+program_text
+        : program_text separator func {$$ = $1;}
+	| func {printf("new text\n"); $$ = new ProgramText();}
+
+	;
+args
+	: args COMMA IDENT {printf("args1\n");$1->add($3); $$ = $1;}
+	| IDENT {printf("args2\n");$$ = new ListArg();}
+	;
+func
+        : INTEGER FUNCTION IDENT '(' args ')' separator list_decl separator list_stmt END FUNCTION IDENT { printf("Func1");TableFunc.push_back(new Function($3, $8, $10, $5))}
+        | INTEGER FUNCTION IDENT '(' args ')' separator list_stmt END FUNCTION IDENT {TableFunc.push_back(new Function($3, NULL, $8, $5))}
+        | INTEGER FUNCTION IDENT '(' ')' separator list_decl separator list_stmt END FUNCTION IDENT { printf("Func1");TableFunc.push_back(new Function($3, $7, $9, NULL))}
+        | INTEGER FUNCTION IDENT '(' ')' separator list_stmt END FUNCTION IDENT {TableFunc.push_back(new Function($3, NULL, $7, NULL))}
         ;
 
 list_stmt
@@ -87,7 +111,12 @@ expr
         | expr '*' expr                { $$ = new ExprArith('*', $1, $3); }
         | expr '/' expr                { $$ = new ExprArith('/', $1, $3); }        
         | expr POW expr                { $$ = new ExprArith(POW, $1, $3); }
+	| CALL IDENT '(' call_args ')'	{$$ = new FuncExpr($2, $4); }
         | '(' expr ')'                { $$ = $2; }
         ;
+
+call_args
+	: call_args COMMA expr {$1->add($3); $$ = $1;}
+	| {$$ = new CallArgs();}
 
 %%

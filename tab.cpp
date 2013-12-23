@@ -4,6 +4,7 @@
 
 int ntab = 0;
 std::vector< std::vector<variable> > Table;
+std::vector<Function*> TableFunc;
 
 variable *get_id(std::string name)
 {
@@ -15,4 +16,14 @@ variable *get_id(std::string name)
     return NULL;
 }
 
+
+Function *get_func(std::string name)
+{
+    int i;
+    for (i = 0; i < TableFunc.size(); ++i) {
+        if (name == TableFunc[i]->name)
+               return (TableFunc[i]);
+    }
+    return NULL;
+}
 

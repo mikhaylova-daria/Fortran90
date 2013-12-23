@@ -19,9 +19,11 @@ NUMERAL ([1-9][0-9]*)|0
 "ELSE"		{ return ELSE; }
 "END"		{ return END;}
 "PROGRAM"	{ return PROGRAM; }
+"FUNCTION"	{ return FUNCTION; }
 "INTEGER"	{ return INTEGER; }
 "DO"		{ return DO; }
 "EXIT"		{ return EXIT; }
+"CALL"		{ return CALL; }
 "::"		{ return DUB_COL;}
 {NUMERAL}	{ yylval.int_val = atoi(yytext); return NUMERAL; }
 {IDENT}		{ strcpy(yylval.ident_name, yytext); return IDENT; }
@@ -36,7 +38,7 @@ NUMERAL ([1-9][0-9]*)|0
 "/"		{ return '/'; }
 "("		{ return '('; }
 ")"		{ return ')'; }
-\r\n|\n|;	{ return '\n'; }
+[\r\n]+|[\n]+	{ return '\n'; }
 ","		{ return COMMA; }
 " "		{ /* space - do nothing */ }
 \t		{ /* space - do nothing */ }
