@@ -50,7 +50,7 @@ public:
 
 class FuncExpr: public Expr {
     public:
-    FuncExpr(std::string _name, CallArgs* args): name(_name) { }
+    FuncExpr(std::string _name, CallArgs* _args): name(_name), args(_args) { }
     int eval();
     private:
 	std::string name;

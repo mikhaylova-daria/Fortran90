@@ -143,7 +143,7 @@ void StmtAssign::run()
 
 void Decl::run() {
     for (int i = 0; i < list_var.size(); ++i) {
-        Table.back().push_back(list_var[i]);
+        Table[Table.size() - 1].push_back(list_var[i]);
     }
 }
 
@@ -165,10 +165,12 @@ void Procedure::run() {
 }
 
 void ListArg::run() {
+std::cout<<"Я зашла "<<std::endl;
     for (int i = 0; i < args.size(); ++i) {
+std::cout<<"Я зашла "<<std::endl;
 	args[i].value = args_value.back()[i];
 	args[i].isInicial = true;
-	Table.back().push_back(args[i]);
+	Table[Table.size() - 1].push_back(args[i]);
     }
 }
 
@@ -178,13 +180,14 @@ void Function::run() {
     var.type = 0;
     std::vector<variable> v;
     v.push_back(var);
-    Table.push_back(v); 
-    if (decl != NULL) {
-        decl->run();
-    }
+    Table.push_back(v);  
     if (args != NULL) {
         args->run();
     }
+    if (decl != NULL) {
+        decl->run();
+    }
+	
     if (stmt != NULL) {
         stmt->run();
     }
@@ -192,4 +195,4 @@ void Function::run() {
     return_value.push_back(answer->value);
 }
 
-Procedure *Program;
+Procedure *Program = NULL;

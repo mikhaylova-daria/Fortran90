@@ -56,7 +56,7 @@ program_text
 	;
 args
 	: args COMMA IDENT {printf("args1\n");$1->add($3); $$ = $1;}
-	| IDENT {printf("args2\n");$$ = new ListArg();}
+	| IDENT {printf("args2\n");$$ = new ListArg(); $$->add($1);}
 	;
 func
         : INTEGER FUNCTION IDENT '(' args ')' separator list_decl separator list_stmt END FUNCTION IDENT { printf("Func1");TableFunc.push_back(new Function($3, $8, $10, $5))}
@@ -112,11 +112,13 @@ expr
         | expr '/' expr                { $$ = new ExprArith('/', $1, $3); }        
         | expr POW expr                { $$ = new ExprArith(POW, $1, $3); }
 	| CALL IDENT '(' call_args ')'	{$$ = new FuncExpr($2, $4); }
+	| CALL IDENT '('')'	{$$ = new FuncExpr($2, NULL); }
         | '(' expr ')'                { $$ = $2; }
         ;
 
 call_args
 	: call_args COMMA expr {$1->add($3); $$ = $1;}
-	| {$$ = new CallArgs();}
+	| expr {CallArgs* arg = new CallArgs(); arg->add($1); $$ = arg;}
+	;
 
 %%
