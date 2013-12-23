@@ -162,12 +162,11 @@ void Procedure::run() {
     if (stmt != NULL) {
         stmt->run();
     }
+    Table.pop_back();
 }
 
 void ListArg::run() {
-std::cout<<"Я зашла "<<std::endl;
     for (int i = 0; i < args.size(); ++i) {
-std::cout<<"Я зашла "<<std::endl;
 	args[i].value = args_value.back()[i];
 	args[i].isInicial = true;
 	Table[Table.size() - 1].push_back(args[i]);
@@ -193,6 +192,7 @@ void Function::run() {
     }
     variable* answer = get_id(this->name);
     return_value.push_back(answer->value);
+    Table.pop_back();
 }
 
 Procedure *Program = NULL;
