@@ -9,6 +9,7 @@ IDENT [A-Za-z][A-Za-z0-9]*
 NUMERAL ([1-9][0-9]*)|0
 
 %option noyywrap
+%option yylineno
 
 %%
 
@@ -38,6 +39,7 @@ NUMERAL ([1-9][0-9]*)|0
 \r\n|\n|;	{ return '\n'; }
 ","		{ return COMMA; }
 " "		{ /* space - do nothing */ }
-.		{ printf("Lexical error: symbol '%c'!\n", yytext[0]); exit(1); }
+\t		{ /* space - do nothing */ }
+.		{ printf("Lexical error: symbol '%c' line '%d' !\n", yytext[0], yylineno); exit(1); }
 
 %%
