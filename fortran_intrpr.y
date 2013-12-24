@@ -46,7 +46,7 @@
 
 program
         : PROGRAM IDENT separator list_stmt END PROGRAM IDENT program_text separator { Program = new Procedure($2, NULL, $4);}
-        | PROGRAM IDENT separator list_decl separator list_stmt END PROGRAM IDENT separator func separator { Program = new Procedure($2, $4, $6);}
+        | PROGRAM IDENT separator list_decl separator list_stmt END PROGRAM IDENT separator program_text separator { Program = new Procedure($2, $4, $6);}
         | PROGRAM IDENT separator list_decl separator list_stmt END PROGRAM IDENT separator{ Program = new Procedure($2, $4, $6);}
 	;
 program_text
