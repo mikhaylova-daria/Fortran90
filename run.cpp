@@ -44,9 +44,12 @@ bool LogExpr::eval()
 	int v1, v2;
 	v1 = e1->eval(); v2 = e2->eval();
 	switch(op) {
-		case '<': return v1 < v2;
-		case '>': return v1 > v2;
-		case '=': return v1 == v2;
+		case GE: return v1 >= v2;
+		case GT: return v1 > v2;
+		case LE: return v1 <= v2;
+		case LT: return v1 < v2;
+		case EQ: return v1 == v2;
+		case NEQ: return v1 != v2;
 	}
 
 	return false;

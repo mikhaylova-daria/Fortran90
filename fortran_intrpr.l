@@ -27,9 +27,18 @@ NUMERAL ([1-9][0-9]*)|0
 "::"		{ return DUB_COL;}
 {NUMERAL}	{ yylval.int_val = atoi(yytext); return NUMERAL; }
 {IDENT}		{ strcpy(yylval.ident_name, yytext); return IDENT; }
+".GE."		{ return GE; }
+".GT."		{ return GT; }
+".LE."		{ return LE; }
+".LT."		{ return LT; }
+"<"		{ return LT; }
+">"		{ return GT; }
+"<="		{ return LE; }
+">="		{ return GE; }
 "=="		{ return EQ; }
-"<"		{ return '<'; }
-">"		{ return '>'; }
+"!="		{ return NEQ; }
+".EQ."		{ return EQ;}
+".NE."		{ return NEQ;}
 "="		{ return '='; }
 "**"		{ return POW; }
 "+"		{ return '+'; }
